@@ -1,43 +1,53 @@
--- ================================================
--- ⚙️ Initial Setup Script for Data Warehouse Project
--- 🧠 Author: Belal Ahmed
--- 📁 Purpose: Create clean environment with Bronze, Silver, Gold schemas
--- ================================================
+/*
+==========================================================
+ Script:    Create Database and Schemas
+ Author:    Belal Ahmed
+==========================================================
+ Purpose:
+   This script creates a new database named 'DataWarehouse' 
+   after checking if it already exists. 
+   If the database exists, it is dropped and recreated. 
+   Additionally, the script sets up three schemas within 
+   the database: 'bronze', 'silver', and 'gold'.
 
--- Ensure you are on the master database
+ WARNING:
+   Running this script will drop the entire 'DataWarehouse' 
+   database if it exists. 
+   ⚠️ All data in the database will be permanently deleted. 
+   Proceed with caution and ensure you have proper backups 
+   before running this script.
+==========================================================
+*/
+
+-- Ensure you are on the master
 USE master;
 GO
 
 -- Check if the database already exists
 IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
 BEGIN
-    -- Force single-user mode and rollback active connections to allow drop
+    -- Force single-user mode and rollback active connections
     ALTER DATABASE DataWarehouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-
-    -- Drop existing DataWarehouse database
+    
+    -- Drop the existing database
     DROP DATABASE DataWarehouse;
 END;
 GO
 
--- ✅ Create a fresh DataWarehouse database
+-- ✅ Create the DataWarehouse database
 CREATE DATABASE DataWarehouse;
 GO
 
--- 🔁 Switch to the newly created database
+-- Switch to the new database
 USE DataWarehouse;
 GO
 
--- ✅ Create Data Engineering schemas
--- Bronze Layer: Raw unprocessed data
-CREATE SCHEMA bronze;
+-- ✅ Create Schemas for Data Engineering Layers
+CREATE SCHEMA bronze;  -- Raw data
+GO
+CREATE SCHEMA silver;  -- Cleansed/standardized data
+GO
+CREATE SCHEMA gold;    -- Curated/aggregated data
 GO
 
--- Silver Layer: Cleansed and conformed data
-CREATE SCHEMA silver;
-GO
-
--- Gold Layer: Curated data for analytics/reporting
-CREATE SCHEMA gold;
-GO
-
--- 🎉 Setup complete! You are ready to build your data pipelines.
+-- 🎉 Setup complete
